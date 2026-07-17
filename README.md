@@ -28,16 +28,37 @@ Other options: **asdf** (multi-language), **uv** (fast installs + venvs).
 - `02_oop_and_solid` — OOP + SOLID principles
 - `03_advanced` — post-OOP advanced topics
 
+## Course companion (desktop)
+
+Browse sections, read lesson source, run lessons, and track progress in a desktop window:
+
+```bash
+python3 -m companion
+# or
+python3 -m companion.desktop
+```
+
+Needs **Tkinter**. If `python3 -m companion` fails with `No module named '_tkinter'`:
+
+```bash
+# Option A — macOS system Python
+/usr/bin/python3 -m companion
+
+# Option B — Homebrew Tk for your Python version
+brew install python-tk@3.14
+```
+
+Progress is saved locally in `progress.json` (gitignored).
+
 ## How to run lessons
 
 ```bash
-# Part 1: Basics
+# Via the companion app (recommended)
+python3 -m companion
+
+# Or run a lesson file directly
 python3 01_basics/01_hello_and_print.py
-
-# Part 2: OOP + SOLID
 python3 02_oop_and_solid/01_classes_and_objects.py
-
-# Part 3: Advanced
 python3 03_advanced/01_type_hints.py
 ```
 
