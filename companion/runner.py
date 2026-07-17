@@ -38,9 +38,29 @@ def _build_command(lesson: Lesson) -> list[str]:
     return [sys.executable, str(lesson.path)]
 
 
-def run_lesson(lesson: Lesson, timeout: float = 60.0) -> RunResult:
+def run_lesson(
+    lesson: Lesson,
+    timeout: float = 60.0,
+    *,
+    stream: bool = False,
+) -> RunResult:
     command = _build_command(lesson)
     try:
+        if stream:
+            print(f"$ {' '.join(command)}\n")
+            completed = subprocess.run(
+                command,
+                cwd=repo_root(),
+                timeout=timeout,
+            )
+            print(f"\n[exit {completed.returncode}]")
+            return RunResult(
+                command=command,
+                returncode=completed.returncode,
+                stdout="",
+                stderr="",
+            )
+
         completed = subprocess.run(
             command,
             cwd=repo_root(),
@@ -55,6 +75,14 @@ def run_lesson(lesson: Lesson, timeout: float = 60.0) -> RunResult:
             stderr=completed.stderr or "",
         )
     except subprocess.TimeoutExpired as exc:
+        if stream:
+            print("\n[timed out]", file=sys.stderr)
+            return RunResult(
+                command=command,
+                returncode=124,
+                stdout="",
+                stderr="[timed out]",
+            )
         stdout = exc.stdout or ""
         stderr = exc.stderr or ""
         if isinstance(stdout, bytes):
